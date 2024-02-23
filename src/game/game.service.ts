@@ -20,8 +20,8 @@ export class GameService {
   }
   private phaseTimeout: NodeJS.Timeout;
 
-  startGame(playerNames: string[], socket: Socket): void {
-    if(playerNames.length < this.totalPlayers){
+  startGame(playerInfo: {name:string; client:Socket}[], socket: Socket): void {//수정
+    if(playerInfo.length < this.totalPlayers){//수정
         console.log("플레이어 수가 부족하여 게임을 시작할 수 없습니다.");
         return;
     }
@@ -49,22 +49,22 @@ export class GameService {
       // 플레이어에게 역할 전달 및 이미지 수정
       this.players.forEach(player => {
         if (player.role === Role.Mafia) {
-            socket.emit('roleAssignment', { playerName: player.name, role: 'Mafia' });
+            player.client.emit('roleAssignment', { playerName: player.name, role: 'Mafia' });
             // 마피아 이미지 수정 //socket -> roleAssignment
         } else {
             // 시민 이미지 수정 (의사, 경찰 등)
             switch (player.role) {
                 case Role.Citizen:
-                    socket.emit('roleAssignment', { playerName: player.name, role: 'Citizen' });
+                    player.client.emit('roleAssignment', { playerName: player.name, role: 'Citizen' });
                     break;
                 case Role.Doctor:
-                    socket.emit('roleAssignment', { playerName: player.name, role: 'Doctor' });
+                    player.client.emit('roleAssignment', { playerName: player.name, role: 'Doctor' });
                     break;
                 case Role.Police:
-                    socket.emit('roleAssignment', { playerName: player.name, role: 'Police' });
+                    player.client.emit('roleAssignment', { playerName: player.name, role: 'Police' });
                     break;
                 default:
-                    socket.emit('roleAssignment', { playerName: player.name, role: 'Citizen' });
+                    player.client.emit('roleAssignment', { playerName: player.name, role: 'Citizen' });
             }
         }
     });

@@ -1,0 +1,16 @@
+ 원본
+  // player.model.ts
+
+export enum Role {
+  Mafia = 'Mafia',
+  Police = "Police",
+  Doctor = "Doctor",
+  Citizen = 'Citizen',
+}
+
+export class Player {
+  [x: string]: any;
+  constructor(public name: string, public role: Role, public isAlive: boolean = true) {}
+}
+  
+  
