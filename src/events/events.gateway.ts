@@ -32,6 +32,7 @@ export class EventsGateway
 
   // 재정의한 메서드들
   afterInit(server: Server) {
+    this.server = server;
     console.log('Server Start');
   }
 
@@ -191,13 +192,20 @@ export class EventsGateway
     //오후에 add. 슬슬 조심해야 하는 구간.(수정-추가하는 구간)
     //현재 플레이어가 로그인된 유저와 매핑되지 않아
     //임시로 본인은 소켓id, 나머지는 랜덤문자열로 넣어둠
-    const players = roomClients.map((el)=>{return el.id});
-    players.push(Math.random().toString(36).substring(2, 12));
-    players.push(Math.random().toString(36).substring(2, 12));
-    players.push(Math.random().toString(36).substring(2, 12));
-    players.push(Math.random().toString(36).substring(2, 12));
+    const players = roomClients.map((el : Socket)=>{
+      return {name : 'testname', clientId: el.id}; 
+    });
 
-    this.gameService.startGame(players, client);
+    const len = players.length;
+    for (let d = 5; d > len; d--){
+      players.push({
+        name: 'test' + d,
+        clientId: Math.random().toString(36).substring(2,12),
+      });
+    }
+    
+
+    this.gameService.startGame(players, this.server);
 //추가 끝
   }
 
