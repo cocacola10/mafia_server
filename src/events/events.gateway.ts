@@ -7,6 +7,7 @@ import {
     WebSocketGateway,
     WebSocketServer,
   } from '@nestjs/websockets';
+import { timeout } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatGateway } from 'src/chat/chat.gateway';
 import { GameService } from 'src/game/game.service';
@@ -189,7 +190,7 @@ export class EventsGateway
     for ( var i = 0; i<clients.length; i++){
       clients[i].emit('reloadRoom', roomId, 'delete')
     }
-    //오후에 add. 슬슬 조심해야 하는 구간.(수정-추가하는 구간)
+    
     //현재 플레이어가 로그인된 유저와 매핑되지 않아
     //임시로 본인은 소켓id, 나머지는 랜덤문자열로 넣어둠
     const players = roomClients.map((el : Socket)=>{
@@ -203,6 +204,10 @@ export class EventsGateway
         clientId: Math.random().toString(36).substring(2,12),
       });
     }
+    
+    setTimeout(() => {
+      this.gameService.startGame(players, this.server);
+    }, 1000);
     
 
     this.gameService.startGame(players, this.server);
