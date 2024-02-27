@@ -25,7 +25,7 @@ export class GameService {
     startGame(
     playerInfo: {name:string; clientId:string }[],
     server: Server,
-  ): void {
+  ): Player[] {
     //수정
     if(playerInfo.length < this.totalPlayers){
         //수정
@@ -82,10 +82,15 @@ export class GameService {
                   server.to(player.clientId).emit('roleAssignment', { playerName: player.name, role: 'Police' });
                     break;
                 default:
-                  server.to(player.clientId).emit('roleAssignment', { playerName: player.name, role: 'Citizen' });
+                  server.to(player.clientId).emit('roleAssignment', { 
+                    playerName: player.name, 
+                    role: 'Citizen', 
+                  });
             }
         }
     });
+
+    return this.players;
 }
 
 
